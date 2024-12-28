@@ -1,4 +1,4 @@
-package finance_test;
+package main.java.finance_test;
 
 public class test {
 
