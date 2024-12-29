@@ -40,13 +40,13 @@
 <table border=1  width=30%>
 <tr>
 	<th>부모계정</th>
-	<th>계정명</th>
+	<th>계정유형</th>
 	<th>잔액</th>
 </tr>
 <c:forEach var="vo" items="${KEY_STATE_FLIST}">
 	<tr>
 		<td>${vo.parent_type}</td>
-		<td>${vo.account_name}</td>
+		<td>${vo.account_type}</td>
 		<td>${vo.diff}</td>
 	</tr>	
 </c:forEach>
