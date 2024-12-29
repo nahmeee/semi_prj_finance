@@ -24,9 +24,12 @@ public class FinanceServlet extends HttpServlet {
 		List<FinanceVO> fList = dao.sumFinanceList();
 		
 		List<FinanceVO> fList2 = dao.sumStatementList();
+
+		List<FinanceVO> fList3 = dao.sumIncomeList();
 		
 		request.setAttribute("KEY_SUM_FLIST", fList);
 		request.setAttribute("KEY_STATE_FLIST", fList2);
+		request.setAttribute("KEY_INCOME_FLIST", fList3);
 		
 		request.getRequestDispatcher(request.getContextPath() + "/finance_list.jsp").forward(request, response);
 		

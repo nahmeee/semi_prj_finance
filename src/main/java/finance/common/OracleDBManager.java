@@ -65,6 +65,7 @@ public class OracleDBManager implements DBManager {
 		}
 	}
 	
+	
 	@Override
 	public void close(Connection conn, PreparedStatement pstmt) {
 		try {

@@ -34,12 +34,49 @@ public class FinanceDAO {
 		ArrayList<FinanceVO> fList = new ArrayList<FinanceVO>();
 		try {
 			String query = "SELECT A.PARENT_TYPE, A.ACCOUNT_ID, A.ACCOUNT_NAME, SUM(J.DEBIT) - SUM(J.CREDIT) AS DIFF\r\n"
-							+ "	FROM ACCOUNTS A LEFT JOIN VOUCHER J ON A.ACCOUNT_ID = J.ACCOUNT_ID\r\n"
-							+ "	GROUP BY A.PARENT_TYPE, A.ACCOUNT_ID, A.ACCOUNT_NAME\r\n"
-							+ "	ORDER BY A.PARENT_TYPE, A.ACCOUNT_ID";
+                    + " FROM ACCOUNTS A LEFT JOIN VOUCHER J ON A.ACCOUNT_ID = J.ACCOUNT_ID\r\n"
+                    + " GROUP BY A.PARENT_TYPE, A.ACCOUNT_ID, A.ACCOUNT_NAME\r\n"
+                    + " ORDER BY A.PARENT_TYPE, A.ACCOUNT_ID";
         	System.out.println(query);
         	
 			pstmt = conn.prepareStatement(query);
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+            	FinanceVO vo = new FinanceVO();
+            	vo.setParent_type(rs.getString("PARENT_TYPE"));
+            	vo.setAccount_id(rs.getString("ACCOUNT_ID"));
+            	vo.setAccount_name(rs.getString("ACCOUNT_NAME"));
+            	vo.setDiff(rs.getInt("DIFF"));
+            	fList.add(vo);
+            }
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}	finally {
+				dbm.close(conn, pstmt, rs);
+		}
+		return fList;
+    }
+	
+	public ArrayList<FinanceVO> sumIncomeList()  {
+    	DBManager dbm = OracleDBManager.getInstance();  	//new OracleDBManager();
+		Connection conn = dbm.connect();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		ArrayList<FinanceVO> fList = new ArrayList<FinanceVO>();
+		try {
+			String query = "SELECT A.PARENT_TYPE, A.ACCOUNT_ID, A.ACCOUNT_NAME, SUM(J.DEBIT) - SUM(J.CREDIT) AS DIFF\r\n"
+							+ "	FROM ACCOUNTS A LEFT JOIN VOUCHER J ON A.ACCOUNT_ID = J.ACCOUNT_ID\r\n"
+							+ " WHERE A.PARENT_TYPE IN ('수익', '비용')"
+							+ "	GROUP BY A.PARENT_TYPE, A.ACCOUNT_ID, A.ACCOUNT_NAME\r\n"
+							+ "	ORDER BY \r\n"
+							+ "    CASE \r\n"
+							+ "        WHEN A.PARENT_TYPE = '수익' THEN 1\r\n"
+							+ "        WHEN A.PARENT_TYPE = '비용' THEN 2\r\n"
+							+ "        ELSE 4 -- 기타 값\r\n"
+							+ "    END, A.ACCOUNT_ID";
+        	System.out.println(query);
+        	
+        	pstmt = conn.prepareStatement(query);
             rs = pstmt.executeQuery();
             while (rs.next()) {
             	FinanceVO vo = new FinanceVO();
