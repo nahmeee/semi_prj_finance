@@ -33,7 +33,7 @@ public class FinanceDAO {
 		ResultSet rs = null;
 		ArrayList<FinanceVO> fList = new ArrayList<FinanceVO>();
 		try {
-			String query = "SELECT A.PARENT_TYPE,A.ACCOUNT_ID,A.ACCOUNT_NAME, SUM(J.DEBIT) - SUM(J.CREDIT) AS DIFF\r\n"
+			String query = "SELECT A.PARENT_TYPE, A.ACCOUNT_ID, A.ACCOUNT_NAME, SUM(J.DEBIT) - SUM(J.CREDIT) AS DIFF\r\n"
 							+ "	FROM ACCOUNTS A LEFT JOIN VOUCHER J ON A.ACCOUNT_ID = J.ACCOUNT_ID\r\n"
 							+ "	GROUP BY A.PARENT_TYPE, A.ACCOUNT_ID, A.ACCOUNT_NAME\r\n"
 							+ "	ORDER BY A.PARENT_TYPE, A.ACCOUNT_ID";
