@@ -16,12 +16,12 @@ public class FinanceDAO {
 	private String account_name;
 	private String account_type;
 	private String parent_type;
-	private int diff;
+	private Long diff;
 	
 	private String voucher_date;
 	private String descript;
-	private int debit;
-	private int credit;
+	private Long debit;
+	private Long credit;
 	
 //	public ArrayList<FinanceVO> sumStatementList()  {
 //    	DBManager dbm = OracleDBManager.getInstance();  	//new OracleDBManager();
@@ -43,7 +43,7 @@ public class FinanceDAO {
 //            	vo.setParent_type(rs.getString("PARENT_TYPE"));
 //            	vo.setAccount_id(rs.getString("ACCOUNT_ID"));
 //            	vo.setAccount_name(rs.getString("ACCOUNT_NAME"));
-//            	vo.setDiff(rs.getInt("DIFF"));
+//            	vo.setDiff(rs.getLong("DIFF"));
 //            	fList.add(vo);
 //            }
 //		} catch (SQLException e) {
@@ -105,7 +105,7 @@ public class FinanceDAO {
             	FinanceVO vo = new FinanceVO();
             	vo.setParent_type(rs.getString("PARENT_TYPE"));
             	vo.setAccount_type(rs.getString("ACCOUNT_TYPE"));
-            	vo.setDiff(rs.getInt("DIFF"));
+            	vo.setDiff(rs.getLong("DIFF"));
             	fList.add(vo);
             }
 		} catch (SQLException e) {
@@ -125,13 +125,18 @@ public class FinanceDAO {
 		try {
 			String query = "SELECT A.PARENT_TYPE, A.ACCOUNT_ID, A.ACCOUNT_NAME, SUM(J.DEBIT) - SUM(J.CREDIT) AS DIFF\r\n"
 							+ "	FROM ACCOUNTS A LEFT JOIN VOUCHER J ON A.ACCOUNT_ID = J.ACCOUNT_ID\r\n"
-							+ " WHERE A.PARENT_TYPE IN ('수익', '비용')"
+							+ " WHERE A.PARENT_TYPE IN ('매출', '매출원가', '판매비및일반관리비', '영업외수익', '영업외비용', '법인세비용')"
 							+ "	GROUP BY A.PARENT_TYPE, A.ACCOUNT_ID, A.ACCOUNT_NAME\r\n"
+							+ " HAVING SUM(J.DEBIT) - SUM(J.CREDIT) <> 0"
 							+ "	ORDER BY \r\n"
 							+ "    CASE \r\n"
-							+ "        WHEN A.PARENT_TYPE = '수익' THEN 1\r\n"
-							+ "        WHEN A.PARENT_TYPE = '비용' THEN 2\r\n"
-							+ "        ELSE 4 -- 기타 값\r\n"
+							+ "        WHEN A.PARENT_TYPE = '매출' THEN 1\r\n"
+							+ "        WHEN A.PARENT_TYPE = '매출원가' THEN 2\r\n"
+							+ "        WHEN A.PARENT_TYPE = '판매비및일반관리비' THEN 3\r\n"
+							+ "        WHEN A.PARENT_TYPE = '영업외수익' THEN 4\r\n"
+							+ "        WHEN A.PARENT_TYPE = '영업외비용' THEN 5\r\n"
+							+ "        WHEN A.PARENT_TYPE = '법인세비용' THEN 6\r\n"
+							+ "        ELSE 7 -- 기타 값\r\n"
 							+ "    END, A.ACCOUNT_ID";
         	System.out.println(query);
         	
@@ -142,7 +147,7 @@ public class FinanceDAO {
             	vo.setParent_type(rs.getString("PARENT_TYPE"));
             	vo.setAccount_id(rs.getString("ACCOUNT_ID"));
             	vo.setAccount_name(rs.getString("ACCOUNT_NAME"));
-            	vo.setDiff(rs.getInt("DIFF"));
+            	vo.setDiff(rs.getLong("DIFF"));
             	fList.add(vo);
             }
 		} catch (SQLException e) {
@@ -185,9 +190,9 @@ public class FinanceDAO {
             	vo.setDescript(rs.getString("DESCRIPT"));
             	vo.setAccount_id(rs.getString("ACCOUNT_ID"));
             	vo.setAccount_name(rs.getString("ACCOUNT_NAME"));
-            	vo.setDebit(rs.getInt("DEBIT"));
-            	vo.setCredit(rs.getInt("CREDIT"));
-            	vo.setDiff(rs.getInt("DIFF"));
+            	vo.setDebit(rs.getLong("DEBIT"));
+            	vo.setCredit(rs.getLong("CREDIT"));
+            	vo.setDiff(rs.getLong("DIFF"));
             	fList.add(vo);
             }
 		} catch (SQLException e) {

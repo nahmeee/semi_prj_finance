@@ -16,12 +16,12 @@ public class FinanceVO {
 	private String account_name;
 	private String account_type;
 	private String parent_type;
-	private int diff;
+	private Long diff;
 	
 	private String voucher_date;
 	private String descript;
-	private int debit;
-	private int credit;
+	private Long debit;
+	private Long credit;
 	
 	
 }
